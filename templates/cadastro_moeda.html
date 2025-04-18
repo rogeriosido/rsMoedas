@@ -1,0 +1,144 @@
+{% extends '_layout1.html' %}
+
+{% block principal %}
+<div class="card shadow-lg p-3 text-light">
+    {% if form.errors %}
+    <ul class="alert alert-danger">
+        {% for field, errors in form.errors.items %}
+        {% for error in errors %}
+        <li>{{ field }}: {{ error }}</li>
+        {% endfor %}
+        {% endfor %}
+    </ul>
+    {% endif %}    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-12 col-md-6">
+                <div class="row">
+                    <div class="col-12 col-md-6 p-1">
+                        <label for="id_pais" class="form-label">País:</label>
+                    </div>
+                    <div class="col-12 col-md-6 p-1">
+                        <select class="form-select" id="{{ form.pais.id_for_label }}" name="{{ form.pais.name }}">
+                                {% for value, label in form.pais.field.choices %}
+                                    <option value="{{ value }}" {% if form.pais.value == value %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-6 p-1">
+                        <label for="id_tipo" class="form-label">Tipo:</label>
+                    </div>
+                    <div class="col-12 col-md-6 p-1">
+                        <select class="form-select" id="{{ form.tipo.id_for_label }}" name="{{ form.tipo.name }}">
+                            {% for value, label in form.tipo.field.choices %}
+                                <option value="{{ value }}" {% if form.tipo.value == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-6 p-1">
+                        <label for="id_ano" class="form-label">Ano:</label>
+                    </div>
+                    <div class="col-12 col-md-6 p-1">
+                        <input type="number" class="form-control" id="{{ form.nome.id_for_label }}" name="{{ form.ano.name }}" value="{{ form.ano.value }}">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-6 p-1">
+                        <label for="id_valor" class="form-label">Valor:</label>
+                    </div>
+                    <div class="col-12 col-md-6 p-1">
+                        <input type="number" class="form-control" id="{{ form.valor.id_for_label }}" name="{{ form.valor.name }}" value="{{ form.valor.value }}">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-6 p-1">
+                        <label for="id_fao" class="form-label">Fao:</label>
+                    </div>
+                    <div class="col-12 col-md-6 p-1">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="{{ form.fao.id_for_label }}" name="{{ form.fao.name }}" {% if form.fao.value %}checked{% endif %}>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-6 p-1">
+                        <label for="id_quantidade" class="form-label">Quantidade:</label>
+                    </div>
+                    <div class="col-12 col-md-6 p-1">
+                        <input type="number" class="form-control" id="{{ form.quantidade.id_for_label }}" name="{{ form.quantidade.name }}" value="{{ form.quantidade.value }}">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-6 p-1">
+                        <label for="id_quantidade_cunhagem" class="form-label">Cunhagem:</label>
+                    </div>
+                    <div class="col-12 col-md-6 p-1">
+                        <input type="number" class="form-control" id="{{ form.quantidade_cunhagem.id_for_label }}" name="{{ form.quantidade_cunhagem.name }}" value="{{ form.quantidade_cunhagem.value }}">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-6 p-1">
+                        <label for="id_quantidade_extra" class="form-label">Extra:</label>
+                    </div>
+                    <div class="col-12 col-md-6 p-1">
+                        <input type="number" class="form-control" id="{{ form.quantidade_extra.id_for_label }}" name="{{ form.quantidade_extra.name }}" value="{{ form.quantidade_extra.value }}">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-6 p-1">
+                        <label for="id_quantidade_troca" class="form-label">Troca:</label>
+                    </div>
+                    <div class="col-12 col-md-6 p-1">
+                        <input type="number" class="form-control" id="{{ form.quantidade_troca.id_for_label }}" name="{{ form.quantidade_troca.name }}" value="{{ form.quantidade_troca.value }}">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-6 p-1">
+                        <label for="id_comemorativas" class="form-label">Comemorativas:</label>
+                    </div>
+                    <div class="col-12 col-md-6 p-1">
+                        <input type="text" class="form-control" id="{{ form.comemorativas.id_for_label }}" name="{{ form.comemorativas.name }}" value="{{ form.comemorativas.value }}">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-6 p-1">
+                        <label for="id_observacoes" class="form-label">Observações:</label>
+                    </div>
+                    <div class="col-12 col-md-6 p-1">
+                        <textarea rows="5" class="form-control" id="{{ form.observacoes.id_for_label }}" name="{{ form.observacoes.name }}">{{ form.observacoes.value }}</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="row">
+                    <div class="col-12 col-md-6 p-1">
+                        <label for="id_foto_frente" class="form-label">Foto Frente:</label>
+                        {{ form.foto_frente }}
+                        {% if moeda.foto_frente %}
+                            <img src="{{ moeda.foto_frente.url }}" alt="Imagem de foto_frente" class="img-fluid" style="object-fit: contain;">
+                        {% else %}
+                            <span class="alert-warning">Não há imagem</span>
+                        {% endif %}
+                    </div>
+                    <div class="col-12 col-md-6 p-1">
+                        <label for="id_foto_verso" class="form-label">Foto Verso:</label>
+                        {{ form.foto_verso }}
+                        {% if moeda.foto_verso %}
+                            <img src="{{ moeda.foto_verso.url }}" alt="Imagem de foto_verso" class="img-fluid" style="object-fit: contain;">
+                        {% else %}
+                            <span class="alert-warning">Não há imagem</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-light">Gravar</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

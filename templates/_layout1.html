@@ -1,0 +1,53 @@
+{% extends '_base.html' %}
+
+{% block menu %}
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <div class="container-fluid">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-outline-dark" href="{% url 'index' %}">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle btn btn-outline-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Listas
+                        </a>
+                        <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item text-light" href="{% url 'lista_paises' %}">Países</a></li>
+                            <li><a class="dropdown-item text-light" href="{% url 'lista_tipos' %}">Tipos</a></li>
+                            <li><a class="dropdown-item text-light" href="{% url 'lista_moedas' %}">Moedas</a></li>
+                            <li><a class="dropdown-item text-light" href="{% url 'lista_por_pais' %}">Por Pais</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-outline-danger" href="{% url 'logout' %}">Sair</a>
+                    </li>
+                {% else %}
+
+                {% endif %}
+            </ul>
+        </div>
+        <div class="d-flex justify-content-between">
+            <div class="d-flex align-items-center ms-auto">
+                {% if user.is_authenticated %}
+                    <a class="btn btn-outline-success text-white fw-bold" href="#">{{ user.username }}</a>
+                {% else %}
+                    <a class="btn btn-outline-warning text-white fw-bold" href="#">Desconectado</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <style>
+        .nav-link:hover, .dropdown-item:hover {
+            background-color: #343a40;
+            color: white;
+        }
+    </style>
+</nav>
+{% endblock %}
+
+

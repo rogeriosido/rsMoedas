@@ -1,0 +1,37 @@
+{% extends '_layout1.html' %}
+
+{% block principal %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1>Lista de Tipos</h1>
+            </div>
+            <div class="col">
+                <a class="btn btn-outline-light" href="{% url 'novo_tipos' %}">Novo</a>
+            </div>
+        </div>
+        <div>
+            <table class="table table-sm table-dark">
+                <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Nome</th>
+                        <th scope="col">Editar</th>
+                        <th scope="col">Apagar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tipo in tipos %}
+                    <tr>
+                        <th scope="row">{{ tipo.id }}</th>
+                        <td>{{ tipo.nome }}</td>
+                        <td><a class="btn btn-outline-light" href="{% url 'edita_tipos' id=tipo.id %}">Editar</a></td>
+                        <td><a class="btn btn-outline-danger" href="{% url 'exclui_tipos' id=tipo.id %}">Apagar</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
