@@ -1,0 +1,157 @@
+{% extends '_layout1.html' %}
+
+{% block principal %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1>Lista de moedas</h1>
+            </div>
+            <div class="col">
+                <a class="btn btn-outline-light" href="{% url 'novo_moedas' %}">Novo</a>
+            </div>
+        </div>
+
+        <form method="get">
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="{{ form.pais.id_for_label }}">{{ form.pais.label }}</label>
+                        <select class="form-select" id="{{ form.pais.id_for_label }}" name="{{ form.pais.name }}">
+                            <option value="">Todos</option>
+                            {% for pais in form.pais.field.queryset %}
+                                <option value="{{ pais.id }}" {% if form.pais.value|stringformat:'s' == pais.id|stringformat:'s' %}selected{% endif %}>{{ pais.nome }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="{{ form.tipo.id_for_label }}">{{ form.tipo.label }}</label>
+                        <select class="form-select" id="{{ form.tipo.id_for_label }}" name="{{ form.tipo.name }}">
+                            <option value="">Todos</option>
+                            {% for tipo in form.tipo.field.queryset %}
+                                <option value="{{ tipo.id }}" {% if form.tipo.value|stringformat:'s' == tipo.id|stringformat:'s' %}selected{% endif %}>{{ tipo.nome }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <br>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-light">Filtrar</button>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label for="searchInput">Pesquisa</label>
+                    <div class="form-group">
+                        <input type="text" id="searchInput" class="form-control" placeholder="Pesquisar em qualquer campo...">
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        {% if request.GET and moedas %}
+            <div>
+                <table class="table table-sm table-dark" id="dataTable">
+                    <thead>
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">Pais</th>
+                            <th scope="col">Tipo</th>
+                            <th scope="col">Ano</th>
+                            <th scope="col">Valor</th>
+                            <th scope="col">Quantidade</th>
+                            <th scope="col" class="d-none d-md-table-cell">Quant.Extra</th>
+                            <th scope="col" class="d-none d-md-table-cell">Quant.Troca</th>
+                            <th scope="col" class="d-none d-md-table-cell">Quant.Cunhagem</th>
+                            <th scope="col" class="d-none d-md-table-cell">Fao</th>
+                            <th scope="col" class="d-none d-md-table-cell">Fotos</th>
+                            <th scope="col">Editar</th>
+                            <th scope="col">Apagar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for moeda in moedas %}
+                            <tr>
+                                <th scope="row">{{ moeda.id }}</th>
+                                <td>{{ moeda.pais }}</td>
+                                <td>{{ moeda.tipo }}</td>
+                                <td>{{ moeda.ano }}</td>
+                                <td>{{ moeda.valor }}</td>
+                                <td>{{ moeda.quantidade }}</td>
+                                <td class="d-none d-md-table-cell">{{ moeda.quantidade_extra }}</td>
+                                <td class="d-none d-md-table-cell">{{ moeda.quantidade_troca }}</td>
+                                <td class="d-none d-md-table-cell">{{ moeda.quantidade_cunhagem }}</td>
+                                <td class="d-none d-md-table-cell">{% if moeda.fao %}✅{% else %}❌{% endif %}</td>
+                                <td class="d-none d-md-table-cell">
+                                    {% if moeda.foto_frente %}
+                                        <img src="{{ moeda.foto_frente.url }}" alt="Frente" width="50">
+                                    {% else %}
+                                        <span class="alert-warnnig">Não ha imagem</span>
+                                    {% endif %}
+                                    {% if moeda.foto_verso %}
+                                        <img src="{{ moeda.foto_verso.url }}" alt="Verso" width="50">
+                                    {% else %}
+                                        <span class="alert-warnnig">Não ha imagem</span>
+                                    {% endif %}
+                                </td>
+                                <td><a class="btn btn-outline-light" href="{% url 'edita_moedas' id=moeda.id %}">Editar</a></td>
+                                <td><a class="btn btn-outline-danger" href="{% url 'exclui_moedas' id=moeda.id %}">Apagar</a></td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="13">Nenhuma moeda cadastrada.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const searchInput = document.getElementById('searchInput');
+                        const dataTable = document.getElementById('dataTable');
+                        const tableBody = dataTable.getElementsByTagName('tbody')[0];
+                        const rows = tableBody.getElementsByTagName('tr');
+
+                        searchInput.addEventListener('input', function() {
+                            const searchTerm = searchInput.value.toLowerCase();
+
+                            for (let i = 0; i < rows.length; i++) {
+                                const row = rows[i];
+                                let found = false;
+                                const cells = row.getElementsByTagName('td');
+                                const thCells = row.getElementsByTagName('th'); // Include th for the Id column
+
+                                // Check in <th> elements as well (for the Id column)
+                                for (let j = 0; j < thCells.length; j++) {
+                                    const cellText = thCells[j].textContent.toLowerCase();
+                                    if (cellText.includes(searchTerm)) {
+                                        found = true;
+                                        break;
+                                    }
+                                }
+
+                                if (!found) {
+                                    for (let j = 0; j < cells.length; j++) {
+                                        const cellText = cells[j].textContent.toLowerCase();
+                                        if (cellText.includes(searchTerm)) {
+                                            found = true;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                if (found) {
+                                    row.style.display = '';
+                                } else {
+                                    row.style.display = 'none';
+                                }
+                            }
+                        });
+                    });
+                </script>
+
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

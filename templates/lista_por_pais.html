@@ -1,0 +1,41 @@
+{% extends '_layout1.html' %}
+
+{% block principal %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1>Lista por pais</h1>
+            </div>
+        </div>
+
+        <div>
+            <table class="table table-sm table-dark">
+                <thead>
+                    <tr>
+                        <th scope="col">Pais</th>
+                        <th scope="col">Total de moedas</th>
+                        <th scope="col">Total com quantidade</th>
+                        <th scope="col">Total sem quantidade</th>
+                        <th scope="col">Tipo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for moeda in lista_resultados %}
+                        <tr>
+                            <td>{{ moeda.pais__nome }}</td>
+                            <td>{{ moeda.totalpais }}</td>
+                            <td>{{ moeda.totalquantidade }}</td>
+                            <td>{{ moeda.totalsemquantidade }}</td>
+                            <td><a class="btn btn-outline-light" href="{% url 'lista_por_pais_tipo' %}?pais={{ moeda.pais__nome }}">Tipo</a></td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="8">Nenhuma moeda cadastrada.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+

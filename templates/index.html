@@ -1,0 +1,162 @@
+{% extends '_layout1.html' %}
+
+{% block principal %}
+<div class="principal-container">
+    <div>
+        <p>Coleção de moedas do Brasil e outros países.</p>
+        <p>Moedas catalogadas por país, tipo, ano, valor e demais detalhes que possam ser usados para catalogar as moedas da Coleção.</p>
+    </div>
+
+    <form method="get">
+        <div class="row p-1 m-1 align-items-end">
+            <div class="col-md-3 m-1">
+                <div class="form-group">
+                    <label for="{{ form.pais.id_for_label }}">{{ form.pais.label }}</label>
+                    <select class="form-select" id="{{ form.pais.id_for_label }}" name="{{ form.pais.name }}">
+                        <option value="">Todos</option>
+                        {% for pais in form.pais.field.queryset %}
+                            <option value="{{ pais.id }}" {% if form.pais.value|stringformat:'s' == pais.id|stringformat:'s' %}selected{% endif %}>{{ pais.nome }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3 m-1">
+                <div class="form-group">
+                    <label for="{{ form.tipo.id_for_label }}">{{ form.tipo.label }}</label>
+                    <select class="form-select" id="{{ form.tipo.id_for_label }}" name="{{ form.tipo.name }}">
+                        <option value="">Todos</option>
+                        {% for tipo in form.tipo.field.queryset %}
+                            <option value="{{ tipo.id }}" {% if form.tipo.value|stringformat:'s' == tipo.id|stringformat:'s' %}selected{% endif %}>{{ tipo.nome }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-2 m-1">
+                <div class="form-group">
+                    <button type="submit" class="btn btn-light">Filtrar</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    {% if request.GET and moedas %}
+        <div class="container-fluid">
+            <div class="row">
+                <div class="d-flex flex-row flex-wrap">
+                    {% for moeda in moedas %}
+                        <div class="border border-5 border-light p-1 m-1">
+                            <div class="d-flex flex-row flex-wrap justify-content-between w-100">
+                                <div class="p-1 m-1">Ano: {{ moeda.ano }}</div>
+
+                                <div class="row p-1 m-1">
+                                    <div>
+                                        {% if form.fao.value %} 
+                                            <div class="text-center">FAO: X</div>
+                                        {% else %}
+                                            <div class="text-center"></div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                                
+                                <div class="p-1 m-1">Valor: {{ moeda.valor }}</div>
+                            </div>
+                            <div class="text-center p-1 m-1">
+                                Cunhagem: {{ moeda.quantidade_cunhagem }}
+                            </div>
+
+                            <style>
+                                .carousel-container {
+                                    width: 350px; /* Defina a largura fixa do contêiner */
+                                    height: 350px; /* Defina a altura fixa do contêiner */
+                                    overflow: hidden; /* Garante que as imagens não ultrapassem o contêiner */
+                                }
+                            
+                                .carousel-inner img {
+                                    max-width: 100%; /* Garante que a imagem não ultrapasse a largura do contêiner */
+                                    max-height: 100%; /* Garante que a imagem não ultrapasse a altura do contêiner */
+                                    width: auto; /* Mantém a proporção da imagem */
+                                    height: auto;
+                                    margin: auto; /* Centraliza a imagem */
+                                    object-fit: contain; /* Garante que a imagem se ajuste dentro do contêiner sem distorcer */
+                                }
+                            </style>
+
+                            <div class="carousel-container">
+                                <div id="carouselMoeda{{ moeda.id }}" class="carousel slide">
+                                    <div class="carousel-indicators">
+                                        {% if moeda.foto_frente %}
+                                            <button type="button" data-bs-target="#carouselMoeda{{ moeda.id }}" data-bs-slide-to="0" class="active" aria-label="Foto Frente"></button>
+                                            {% if moeda.foto_verso %}
+                                                <button type="button" data-bs-target="#carouselMoeda{{ moeda.id }}" data-bs-slide-to="1" aria-label="Foto Verso"></button>
+                                            {% endif %}
+                                        {% elif moeda.foto_verso %}
+                                            <button type="button" data-bs-target="#carouselMoeda{{ moeda.id }}" data-bs-slide-to="0" class="active" aria-label="Foto Verso"></button>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="carousel-inner">
+                                        {% if moeda.foto_frente %}
+                                            <div class="carousel-item active">
+                                                <img src="{{ moeda.foto_frente.url }}" class="d-block img-fluid border rounded-circle border-5 border-light" alt="Frente da moeda">
+                                            </div>
+                                            {% if moeda.foto_verso %}
+                                                <div class="carousel-item">
+                                                    <img src="{{ moeda.foto_verso.url }}" class="d-block img-fluid border rounded-circle border-5 border-light" alt="Verso da moeda">
+                                                </div>
+                                            {% endif %}
+                                        {% elif moeda.foto_verso %}
+                                            <div class="carousel-item active">
+                                                <img src="{{ moeda.foto_verso.url }}" class="d-block img-fluid border rounded-circle border-5 border-light" alt="Verso da moeda">
+                                            </div>
+                                        {% else %}
+                                            <div class="carousel-item active">
+                                                <div class="text-center text-danger border border-danger p-3 m-2">SEM IMAGEM</div>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+
+                                    {% if moeda.foto_frente or moeda.foto_verso %}
+                                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselMoeda{{ moeda.id }}" data-bs-slide="prev">
+                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        </button>
+                                        <button class="carousel-control-next" type="button" data-bs-target="#carouselMoeda{{ moeda.id }}" data-bs-slide="next">
+                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="text-center p-1 m-1">{{ moeda.pais }}</div>
+                            </div>
+                            <div>
+                                <div class="text-center">{{ moeda.tipo }}</div>
+                            </div>
+                            <div>
+                                {% if moeda.observacoes %} 
+                                    <div class="text-center">{{ moeda.observacoes }}</div>
+                                {% else %}
+                                    <div class="text-center"></div>
+                                {% endif %}
+                            </div>
+                            <div>
+                                {% if moeda.comemorativas %} 
+                                    <div class="text-center">{{ moeda.comemorativas }}</div>
+                                {% else %}
+                                    <div class="text-center"></div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="text-center text-danger border border-light p-3 m-2">Nenhuma moeda cadastrada.</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="text-center text-danger border border-danger p-3 m-2">Nenhuma moeda encontrada pela pesquisa.</div>
+    {% endif %}
+</div>
+{% endblock %}
+
+
